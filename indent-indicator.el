@@ -5,7 +5,7 @@
 ;; Author: Jade Michael Thornton
 ;; Copyright (c) 2019 Jade Michael Thornton
 ;; URL: https://gitlab.com/thornjad/rivet
-;; Version: 2.3.1
+;; Version: 2.4.0
 ;;
 ;; This file is not part of GNU Emacs
 ;;
@@ -75,12 +75,13 @@
 ;; 2.2.0 add option "indent-indicator-threshold"
 ;; 2.3.0 use regexp search to find the beginning of level
 ;; 2.3.1 add option "indent-indicator-lispy-modes"
+;; 2.4.0 change delay default to 0.1 seconds
 
 (require 'cl-lib)
 
 ;;; Code:
 
-(defconst indent-indicator-version "2.3.1")
+(defconst indent-indicator-version "2.4.0")
 
 (defgroup indent-indicator nil
   "Show vertical lines to guide indentation."
@@ -107,7 +108,7 @@
   :type 'boolean
   :group 'indent-indicator)
 
-(defcustom indent-indicator-delay nil
+(defcustom indent-indicator-delay 0.1
   "When a positive number, rendering guide lines is delayed DELAY
 seconds."
   :type 'number
