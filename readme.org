@@ -1,0 +1,88 @@
+#+TITLE: Indent Indicator
+#+Author: Jade Michael Thornton
+
+Indent Indicator is a minor mode which displays vertical lines to easily
+visualize current indentation.
+
+** Usage
+
+=indent-indicator-mode= enables the mode locally. You can also enable globally
+with =global-indent-indicator-mode=.
+
+** Configuration
+
+Column lines are propertized with =indent-indicator-face=. Customize to your
+liking.
+
+: (set-face-background 'indent-indicator-face "dimgray")
+
+By default, indent-indicator shows guide lines during idle-time, waiting 0.1
+seconds. You can customize this time, or run instantly by setting it to 0.0
+seconds. Operation is rather fast, so running instantly shouldn't cause much
+delay.
+
+: (setq indent-indicator-delay 0.0)
+
+You may also change the character for guides.
+
+: (setq indent-indicator-char ":")
+
+** Comparisons with highlight-indentation
+
+- look and feel
+- better block detection in LISP-like languages
+
+  : (foo                  (foo
+  : |(foobar baz          |(foobar baz
+  : ||       (foobar      |   |   |(foobar
+  : ||       |(qux))))    |   |   | (qux))))
+  :
+  :    indent-indicator     highlight-indentation
+
+- supports TABs
+- worse in performance, especially when you open a file that includes
+  very large, deep blocks
+
+** Working with =company-mode='s overlay system
+
+Indent Indicator does not work well with =company-mode='s pseudo-overlay, so it
+can be disabled temporarily locally while the overlay is open:
+
+: (defvar aero/did-have-whitespace-p nil)
+: (make-variable-buffer-local 'aero/did-have-whitespace-p)
+: (defun pre-popup-draw ()
+:   "Turn off whitespace and indent before showing company complete tooltip."
+:   (if (or whitespace-mode global-whitespace-mode)
+:       (progn
+:         (indent-indicator-mode -1)
+:         (setq my-did-have-whitespace-p t))))
+: (defun post-popup-draw ()
+:   "Restore previous whitespace and indent after showing company tooltip."
+:   (if my-did-have-whitespace-p
+:       (progn
+:         (indent-indicator-mode +1)
+:         (setq my-did-have-whitespace-p nil))))
+: (eval-after-load "company"
+:   (progn
+:     (advice-add 'company-pseudo-tooltip-unhide :before #'pre-popup-draw)
+:     (advice-add 'company-pseudo-tooltip-hide :after #'post-popup-draw)))
+
+** Credit
+
+Indent Indicator is based on the 2013 version of =zk-phi='s Indent Guide mode.
+
+** Copying
+
+Copyright (c) 2019 Jade Michael Thornton
+
+Permission to use, copy, modify, and/or distribute this software for any purpose
+with or without fee is hereby granted, provided that the above copyright notice
+and this permission notice appear in all copies.
+
+The software is provided "as is" and the author disclaims all warranties with
+regard to this software including all implied warranties of merchantability and
+fitness. In no event shall the author be liable for any special, direct,
+indirect, or consequential damages or any damages whatsoever resulting from loss
+of use, data or profits, whether in an action of contract, negligence or other
+tortious action, arising out of or in connection with the use or performance of
+this software.
